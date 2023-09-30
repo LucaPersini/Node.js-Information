@@ -1,7 +1,7 @@
 const Interaction = require('../models/interaction')
 
 const interaction_index = (req, res) => {
-  Interaction.find(req.query)
+  Interaction.find({"articleID": req.params.id}, req.query)
     .then(result => {
       res.status(200).send(result)
     })

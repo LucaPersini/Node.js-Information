@@ -9,6 +9,10 @@ const interactionSchema = new Schema({
   date: {
     type: String,
     required: true
+  },
+  articleID: {
+    type: String,
+    require: true
   }
 })
 

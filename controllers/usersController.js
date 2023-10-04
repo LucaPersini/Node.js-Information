@@ -1,54 +1,81 @@
 const User = require('../models/user')
 
-const user_index = (req, res) => {
-  User.find(req.query)
-    .then(result => {
-      res.status(200).send(result)
-    })
-    .catch(err => console.log(err))
+const userIndex = async (req, res) => {
+  try {
+    const users = await User.find(req.query)
+    if(!users) {
+      res.status(404).send("Error 404, users not found")
+    }
+    res.status(200).send(users)
+  }
+  catch(error) {
+    res.status(500).send(error.message)
+  }
 }
 
-const user_details = (req, res) => {
-  const id =  req.params.id
-  User.findById(id)
-    .then(result => {
-      res.status(200).send(result)
-    })
-    .catch(err => conole.log(err))
+const userDetails = async (req, res) => {
+  try {
+    const id = req.params.id
+    if(!id) {
+      res.status(404).send("Error 404, user not found")
+    }
+    const user = await User.findById(id)
+    res.status(200).send(user)
+  }
+  catch(error) {
+    res.status(500).send(error.message)
+  }
 }
 
-const create_user = (req, res) => {
-  const user  = req.body
-  User.create(user)
-    .then(result => {
-      res.status(200).send(result)
-    })
-    .catch(err => console.log(err))
+const createUser = async (req, res) => {
+  try {
+    const user = req.body
+    if(!user) {
+      res.status(400).send("Error 400, bad request")
+    }
+    await User.create(user)
+    res.status(200).send(user)
+  }
+  catch(error) {
+    res.status(500).send(error.message)
+  }
 }
 
-const delete_user = (req, res) => {
-  const id = req.params.id
-  User.findByIdAndDelete(id)
-    .then(() => {
-      res.status(200).send('DELETE Request Called')
-    })
-    .catch(err => console.log(err))
+const deleteUser = async (req, res) => {
+  try {
+    const id = req.params.id
+    if(!id) {
+      res.status(404).send("Error 404, user not found")
+    }
+    res.status(200).send("DELETE request called")
+  }
+  catch(error) {
+    res.status(500).send(error.message)
+  }
 }
 
-const update_user = (req, res) => {
-  const id = req.params.id
-  const user = req.body
-  User.findByIdAndUpdate(id, user)
-    .then(result => {
-      res.status(200).send(result)
-    })
-    .catch(err => console.log(err))
+const updateUser = async (req, res) => {
+  try {
+    const id = req.params.id
+    if(!id) {
+      res.status(404).send("Error 404, user not found")
+    }
+    const user = req.params.id
+    if(!user) {
+      res.status(400).send("Error 400, bad request")
+    }
+    await User.findByIdAndUpdate(id, user)
+    res.status(200).send(user)
+  }
+  catch(error) {
+    res.status(500).send(error.message)
+  }
 }
 
 module.exports = {
-  user_index,
-  user_details,
-  create_user,
-  delete_user,
-  update_user
+  userIndex,
+  userDetails,
+  createUser,
+  deleteUser,
+  updateUser
 }

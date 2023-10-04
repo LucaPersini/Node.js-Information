@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const interactionSchema = require('./interaction')
 const Schema =  mongoose.Schema
 
 const articleSchema = new Schema({
@@ -9,7 +10,8 @@ const articleSchema = new Schema({
   date: {
     type: String,
     required: true
-  }
+  },
+  interactions: [interactionSchema]
 })
 
 const Article = mongoose.model('article', articleSchema)

@@ -19,3 +19,7 @@ mongoose.connect(process.env.DATABASE_URL)
 app.use('/api/articles', articlesRoutes)
 
 app.use('/api/users', usersRoutes)
+
+app.use((req, res) => {
+  res.status(404).send("Error 404")
+})

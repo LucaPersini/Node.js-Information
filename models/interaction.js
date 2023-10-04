@@ -9,12 +9,7 @@ const interactionSchema = new Schema({
   date: {
     type: String,
     required: true
-  },
-  articleID: {
-    type: String,
-    require: true
   }
 })
 
-const Interaction = mongoose.model("interaction", interactionSchema)
-module.exports = Interaction
+module.exports = interactionSchema

@@ -4,24 +4,25 @@ const interactionsController = require('../controllers/interactionsController')
 
 const router = express.Router()
 
-router.get('/', articlesController.articles_index)
+router.get('/', articlesController.articlesIndex)
 
-router.get('/:id', articlesController.article_details)
+router.get('/:id', articlesController.articleDetails)
 
-router.post('/', articlesController.create_article)
+router.post('/', articlesController.createArticle)
 
-router.delete('/:id', articlesController.delete_article)
+router.delete('/:id', articlesController.deleteArticle)
 
-router.patch('/:id', articlesController.update_article)
+router.patch('/:id', articlesController.updateArticle)
 
-router.get('/:id/interactions', interactionsController.interaction_index)
+router.get('/:id/interactions', interactionsController.interactionsIndex)
 
-router.get('/:id/interactions/:interactionID', interactionsController.interaction_details)
+router.get('/:id/interactions/:interactionId', interactionsController.interactionDetails)
 
-router.post('/:id/interactions', interactionsController.create_interaction)
+router.post('/:id/interactions', interactionsController.createInteraction)
 
-router.delete('/:id/interactions/:interactionID', interactionsController.delete_interaction)
+router.delete('/:id/interactions/:interactionId', interactionsController.deleteInteraction)
 
-router.patch('/:id/interactions/:interactionID', interactionsController.update_interaction)
+router.patch('/:id/interactions/:interactionId', interactionsController.updateInteraction)
+
 
 module.exports = router

@@ -16,7 +16,7 @@ const userIndex = async (req, res) => {
       itemsInList: users.length,
       totalItems: totalCount
     }
-    res.status(200).send(users)
+    res.status(200).send(respose)
   }
   catch(error) {
     res.status(500).send(error.message)
@@ -40,11 +40,11 @@ const userDetails = async (req, res) => {
 const createUser = async (req, res) => {
   const userBody = req.body
   try {
-    if(!userBody.nickname || !userBody.age || !userBody.city) {
+    if(!userBody.nickname || !userBody.dateOfBirth || !userBody.city) {
       return res.status(400).send("Error 400, bad request")
     }
-    await User.create(user)
-    res.status(200).send(user)
+    await User.create(userBody)
+    res.status(200).send(userBody)
   }
   catch(error) {
     res.status(500).send(error.message)
@@ -69,14 +69,15 @@ const updateUser = async (req, res) => {
   const id = req.params.id
   const userBody = req.body
   try {
-    if(!userBody.nickname || !userBody.age || !userBody.city) {
+    if(!userBody.nickname || !userBody.dateOfBirth || !userBody.city) {
       return res.status(400).send("Error 400, bad request")
     }
-    const user = await User.findByIdAndUpdate(id, user)
+    const user = await User.findByIdAndUpdate(id, userBody)
     if(!user) {
       return res.status(404).send("Error 404, user not found")
     }
-    res.status(200).send(user)
+    const updatedUser = await User.findById(id)
+    res.status(200).send(updatedUser)
   }
   catch(error) {
     res.status(500).send(error.message)

@@ -41,11 +41,11 @@ const articleDetails = async (req, res) => {
 const createArticle = async (req, res) => {
   const articleBody = req.body
   try {
-    if(!articleBody.title || !articleBody.date || !articleBody.interactions) {
+    if(!articleBody.title || !articleBody.date) {
       return res.status(400).send("Error 400, bad request")
     }
-    await Article.create(article)
-    res.status(200).send(article)
+    await Article.create(articleBody)
+    res.status(200).send(articleBody)
   }
   catch (error) {
     res.status(500).send(error.message)
@@ -70,14 +70,15 @@ const updateArticle = async (req, res) => {
   const id = req.params.id
   const articleBody = req.body
   try {
-    if(!articleBody.title || !articleBody.date || !articleBody.interactions) {
+    if(!articleBody.title || !articleBody.date) {
       return res.status(400).send("Error 400, bad request")
     }
-    const article = await Article.findByIdAndUpdate(id, article)
+    const article = await Article.findByIdAndUpdate(id, articleBody)
     if(!article) {
       return res.status(404).send("Error 404, article not found")
     }
-    res.status(200).send(article)
+    const updatedArticle = await Article.findById(id)
+    res.status(200).send(updatedArticle)
   }
   catch(error) {
     res.status(500).send(error.message)

@@ -57,9 +57,9 @@ const createInteraction = async (req, res) => {
     if(!article) {
       return res.status(404).send("Error 404, article not found")
     }
-    article.interactions.push(interaction)
+    article.interactions.push(interactionBody)
     article.save()
-    res.status(200).send(interaction)
+    res.status(200).send(interactionBody)
   }
   catch(error) {
     res.status(500).send(error.message)
@@ -79,7 +79,7 @@ const deleteInteraction = async (req, res) => {
       return res.status(404).send("Error 404, interaction not found")
     }
     article.interactions.pull(interaction)
-    res.status(200).send(article)
+    res.status(200).send("DELETE request called")
   }
   catch(error) {
     res.status(500).send(error.message)
@@ -97,7 +97,7 @@ const updateInteraction = async (req, res) => {
     if(!article) {
       return res.status(404).send("Error 404, article not found")
     }
-    const interaction = await article.interactions.id(interactionId)
+    const interaction = article.interactions.id(interactionId)
     if(!interaction) {
       return res.status(404).send("Error 404, interaction not found")
     }

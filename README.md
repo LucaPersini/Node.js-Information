@@ -48,7 +48,3 @@ Then goal of this project is for me to learn and put into practice new technolog
 - Getting more familiar with Node.js
 - First time using Express.js
 - First time using MongoDB
-
-```
-
-```

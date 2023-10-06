@@ -1,13 +1,26 @@
 const Article = require('../models/article')
 
 const interactionsIndex = async (req, res) => {
+  const id = req.params.id
+  const page = parseInt(req.query.page)
+  const perPage = 10
   try {
-    const id = req.params.id
-    if(!id) {
-      res.statu(404).send("Error 404, article not found")
+    const article = await Article.findById(id)
+    if(!article) {
+      return res.status(404).send("Error 404, article not found")
     }
-    const interactions = await Article.findById(id).select({interactions: 1, _id: 0})
-    res.status(200).send(interactions)
+    const interactions = await Article.findById(id)
+      .select({interactions: 1, _id: 0})
+      .skip((page-1) * perPage)
+      .limit(perPage)
+    
+    const totalCount = article.interactions.length
+    const response = {
+      interactions: interactions,
+      itemsInList: interactions.interactions.length,
+      totalItems: totalCount
+    }
+    res.status(200).send(response)
   }
   catch(error) {
     res.status(500).send(error.message)
@@ -15,17 +28,17 @@ const interactionsIndex = async (req, res) => {
 }
 
 const interactionDetails = async (req, res) => {
-  try{
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, article not found")
-    }
-    const interactionId = req.params.interactionId
-    if(!interactionId) {
-      res.statu(404).send("Error 404, interaction not found")
-    }
+  const id = req.params.id
+  const interactionId = req.params.interactionId
+  try{ 
     const article = await Article.findById(id)
+    if(!article) {
+      return res.status(404).send("Error 404, article not found")
+    }
     const interaction = await article.interactions.find((i) => i._id.toString() == interactionId)
+    if(!interaction) {
+      return res.status(404).send("Error 404, interaction not found")
+    }
     res.status(200).send(interaction)
   }
   catch(error) {
@@ -34,17 +47,17 @@ const interactionDetails = async (req, res) => {
 }
 
 const createInteraction = async (req, res) => {
-  try {
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, article not found")
-    }
-    const interaction = await req.body
-    if(!interaction) {
-      res.status(400).send("Error 400, bad request")
+  const id = req.params.id
+  const interactionBody = req.body
+  try { 
+    if(!interactionBody.type || !interactionBody.date) {
+      return res.status(400).send("Error 400, bad request")
     }
     const article = await Article.findById(id)
-    await article.interactions.push(interaction)
+    if(!article) {
+      return res.status(404).send("Error 404, article not found")
+    }
+    article.interactions.push(interaction)
     article.save()
     res.status(200).send(interaction)
   }
@@ -54,17 +67,17 @@ const createInteraction = async (req, res) => {
 }
 
 const deleteInteraction = async (req, res) => {
-  try {
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, article not found")
-    }
-    const interactionId = req.params.interactionId
-    if(!interactionId) {
-      res.status(404).send("Error 404, interaction not found")
-    }
+  const id = req.params.id
+  const interactionId = req.params.interactionId
+  try {  
     const article = await Article.findById(id)
+    if(!article) {
+      return res.status(404).send("Error 404, article not found")
+    }
     const interaction = await article.interactions.id(interactionId)
+    if(!interaction) {
+      return res.status(404).send("Error 404, interaction not found")
+    }
     article.interactions.pull(interaction)
     res.status(200).send(article)
   }
@@ -74,19 +87,19 @@ const deleteInteraction = async (req, res) => {
 }
 
 const updateInteraction = async (req, res) => {
-  try {
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, article not found")
-    }
-    const interactionId = req.params.interactionId
-    if(!interactionId) {
-      res.status(404).send("Error 404, interaction not found")
-    }
+  const id = req.params.id
+  const interactionId = req.params.interactionId
+  try {   
+    if(!req.body.type || !req.body.date) {
+      return res.status(400).send("Error 400, bad request")
+    }  
     const article = await Article.findById(id)
+    if(!article) {
+      return res.status(404).send("Error 404, article not found")
+    }
     const interaction = await article.interactions.id(interactionId)
-    if(!req.body) {
-      res.status(400).send("Error 400, bad requeste")
+    if(!interaction) {
+      return res.status(404).send("Error 404, interaction not found")
     }
     if(req.body.type) {
       interaction.set("type", req.body.type)

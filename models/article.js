@@ -14,5 +14,7 @@ const articleSchema = new Schema({
   interactions: [interactionSchema]
 })
 
+
+articleSchema.index({title: 'text'})
 const Article = mongoose.model('article', articleSchema)
 module.exports = Article

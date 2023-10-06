@@ -1,9 +1,11 @@
 # Node.js-Information
 
 ## Description
+
 A RESTful API for an Information website
 
 ## Endpoint map
+
 - GET all articles '/api/articles'
 - GET a specific article '/api/articles/:id'
 - POST an article '/api/articles'
@@ -26,6 +28,27 @@ A RESTful API for an Information website
 - Express.js
 - MongoDB
 
+## Deployment
+
+```shell
+git clone https://github.com/LucaPersini/Node.js-Information
+npm init
+```
+
+Then run with
+
+```shell
+nodemon index.js
+```
+
 ## Backgound & Motivation
 
-Then goal of this project is for me to learn and put into practice new technologies as Node.js, Express and MongoDB.
+Then goal of this project is for me to learn and put into practice new technologies and tools. This includes:
+
+- Getting more familiar with Node.js
+- First time using Express.js
+- First time using MongoDB
+
+```
+
+```

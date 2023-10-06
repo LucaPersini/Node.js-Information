@@ -1,10 +1,20 @@
 const User = require('../models/user')
 
 const userIndex = async (req, res) => {
+  const page = parseInt(req.query.page) || 1
+  const perPage = 10
   try {
     const users = await User.find(req.query)
+      .skip((page-1) * perPage)
+      .limit(perPage)
     if(!users) {
-      res.status(404).send("Error 404, users not found")
+      return res.status(404).send("Error 404, users not found")
+    }
+    const totalCount = await User.countDocuments()
+    const respose = {
+      users: users,
+      itemsInList: users.length,
+      totalItems: totalCount
     }
     res.status(200).send(users)
   }
@@ -14,12 +24,12 @@ const userIndex = async (req, res) => {
 }
 
 const userDetails = async (req, res) => {
+  const id = req.params.id
   try {
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, user not found")
-    }
     const user = await User.findById(id)
+    if(!user) {
+      return res.status(404).send("Error 404, user not found")
+    }
     res.status(200).send(user)
   }
   catch(error) {
@@ -28,10 +38,10 @@ const userDetails = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
+  const userBody = req.body
   try {
-    const user = req.body
-    if(!user) {
-      res.status(400).send("Error 400, bad request")
+    if(!userBody.nickname || !userBody.age || !userBody.city) {
+      return res.status(400).send("Error 400, bad request")
     }
     await User.create(user)
     res.status(200).send(user)
@@ -42,10 +52,11 @@ const createUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
+  const id = req.params.id
   try {
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, user not found")
+    const user = await User.findByIdAndDelete(id)
+    if(!user) {
+      return res.status(404).send("Error 404, user not found")
     }
     res.status(200).send("DELETE request called")
   }
@@ -55,16 +66,16 @@ const deleteUser = async (req, res) => {
 }
 
 const updateUser = async (req, res) => {
+  const id = req.params.id
+  const userBody = req.body
   try {
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, user not found")
+    if(!userBody.nickname || !userBody.age || !userBody.city) {
+      return res.status(400).send("Error 400, bad request")
     }
-    const user = req.params.id
+    const user = await User.findByIdAndUpdate(id, user)
     if(!user) {
-      res.status(400).send("Error 400, bad request")
+      return res.status(404).send("Error 404, user not found")
     }
-    await User.findByIdAndUpdate(id, user)
     res.status(200).send(user)
   }
   catch(error) {

@@ -1,12 +1,23 @@
 const Article = require('../models/article')
 
 const articlesIndex = async (req, res) => {
+  const page = parseInt(req.query.page) || 1
+  const perPage = 10
   try{
     const articles = await Article.find(req.query)
+      .select({interactions: 0})
+      .skip((page-1) * perPage)
+      .limit(perPage)
     if(!articles) {
-      res.status(404).send("Error 404, articles not found")
+      return res.status(404).send("Error 404, articles not found")
     }
-    res.status(200).send(articles)
+    const totalCount = await Article.countDocuments()
+    const respose = {
+      articles: articles,
+      itemsInList: articles.length,
+      totalItems: totalCount
+    }
+    res.status(200).send(respose)
   }
   catch (error)  {
     res.status(500).send(error.message)
@@ -14,11 +25,11 @@ const articlesIndex = async (req, res) => {
 }
 
 const articleDetails = async (req, res) => {
+  const id = req.params.id
   try {
-    const id = req.params.id
     const article = await Article.findById(id)
     if(!article) {
-      res.status(404).send("Error 404, article not found")
+      return res.status(404).send("Error 404, article not found")
     }
     res.status(200).send(article)
   }
@@ -28,42 +39,43 @@ const articleDetails = async (req, res) => {
 }
 
 const createArticle = async (req, res) => {
+  const articleBody = req.body
   try {
-    const article = req.body
-    if(!article) {
-      res.status(400).send("Error 400, bad request")
+    if(!articleBody.title || !articleBody.date || !articleBody.interactions) {
+      return res.status(400).send("Error 400, bad request")
     }
     await Article.create(article)
     res.status(200).send(article)
   }
   catch (error) {
-    res.statu(500).send(error.message)
+    res.status(500).send(error.message)
   }
 }
 
 const deleteArticle = async (req, res) => {
+  const id = req.params.id
   try {
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, article not found")
+    const article = await Article.findByIdAndDelete(id)
+    if(!article) {
+      return res.status(404).send("Error 404, article not found")
     }
-    await Article.findByIdAndDelete(id)
     res.status(200).send("DELETE request called")
   }
   catch(error) {
-    res.statu(500).send(error.message)
+    res.status(500).send(error.message)
   }
 }
 
 const updateArticle = async (req, res) => {
+  const id = req.params.id
+  const articleBody = req.body
   try {
-    const id = req.params.id
-    if(!id) {
-      res.status(404).send("Error 404, article not found")
+    if(!articleBody.title || !articleBody.date || !articleBody.interactions) {
+      return res.status(400).send("Error 400, bad request")
     }
-    const article = req.body
+    const article = await Article.findByIdAndUpdate(id, article)
     if(!article) {
-      res.status(400).send("Error 400, bad request")
+      return res.status(404).send("Error 404, article not found")
     }
     res.status(200).send(article)
   }

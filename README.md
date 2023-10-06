@@ -34,6 +34,7 @@ A RESTful API for an Information website
 git clone https://github.com/LucaPersini/Node.js-Information
 npm init
 ```
+Set the PORT and the DATABASE_URL variables
 
 Then run with
 

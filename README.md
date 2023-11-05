@@ -32,7 +32,7 @@ A RESTful API for an Information website
 
 ```shell
 git clone https://github.com/LucaPersini/Node.js-Information
-npm init
+npm install
 ```
 Set the PORT and the DATABASE_URL variables
 

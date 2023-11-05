@@ -44,7 +44,7 @@ nodemon index.js
 
 ## Backgound & Motivation
 
-Then goal of this project is for me to learn and put into practice new technologies and tools. This includes:
+The goal of this project is for me to learn and put into practice new technologies and tools. This includes:
 
 - Getting more familiar with Node.js
 - First time using Express.js
